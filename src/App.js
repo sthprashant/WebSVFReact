@@ -38,7 +38,10 @@ function App() {
   };
 
   const codeSubmit = async () => {
-    const response = await websvf.post('/', `code=${code}`);
+    const response = await websvf.post(
+      '/',
+      `code=${code}&fileName=${'test1'}&fileVersion=${'1.0'}`
+    );
 
     setResponse(prettyFormat(response.data, { escapeString: false }));
   };
