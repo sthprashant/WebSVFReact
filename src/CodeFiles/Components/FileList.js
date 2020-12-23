@@ -34,6 +34,7 @@ const FileList = (props) => {
                   <ListItem
                     key={value.fileId}
                     button
+                    // onClick={props.updateSelectedFile}
                     onClick={(e) => {
                       props.updateSelectedFile(e, value.fileName);
                     }}

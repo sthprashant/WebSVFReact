@@ -22,19 +22,21 @@ const CodeFiles = (props) => {
   ]);
   const [selectedFile, setselectedFile] = useState(userCode[0].fileName);
   console.log(`selected file is ${selectedFile} and file name is`);
+  console.log(`code is ${code}`);
   const handleAddFile = () => {
-    setUserCode((oldUserCode) => [
-      ...oldUserCode,
+    setUserCode([
+      ...userCode,
       {
         fileId: Math.random(),
         fileName: fileName,
         version: 0.1,
-        content: code,
+        content: `//write your C code here`,
       },
     ]);
 
     console.log(userCode);
     console.log(`creating file with name ${fileName}`);
+    console.log(userCode);
     closeDialog();
     clearFileName();
   };
@@ -49,50 +51,46 @@ const CodeFiles = (props) => {
     setDialogBox(false);
     clearFileName();
   }
+  // function updateSelectedFile(selectedFileName) {
+  //   console.log(selectedFileName);
+  //   setselectedFile(selectedFileName.target.textContent);
+  //   console.log(selectedFile);
+  //   const elementIndex = userCode.findIndex((value) => {
+  //     return value.fileName === selectedFile;
+  //   });
+  //   setCode(userCode[elementIndex].content);
+  // }
   function updateSelectedFile(e, selectedFileName) {
     console.log(e);
     console.log(e.target.textContent);
     setselectedFile(selectedFileName);
+    const elementIndex = userCode.findIndex((value) => {
+      return value.fileName === selectedFile;
+    });
+    setCode(userCode[elementIndex].content);
   }
-  // function handleChange(newValue, value, index) {
-  //   //console.log(newValue);
-  //   console.log(
-  //     `event target value us ${newValue} and new value is ${JSON.stringify(
-  //       value
-  //     )} and index is ${index} ${JSON.stringify(index)}`
-  //   );
-  //   setCode(newValue);
-  //    console.log(code)
-  //   // const elementIndex = userCode.findIndex((value) => {
-  //   //   return value.fileName === selectedFile;
-  //   // });
-  //   //setUserCode(...userCode)
-  //   // function onChange(newValue) {
-  //   //   //console.log(newValue);
-  //   //   setCode(newValue);
-  //   //   const elementIndex = userCode.findIndex((value) => {
-  //   //     return value.fileName === selectedFile;
-  //   //   });
-  //   //console.log(`element index is ${elementIndex}`);
-  //   // setUserCode([...userCode, (userCode[elementIndex].content = code)]);
-  //   // setUserCode(...userCode, userCode.)
-  //   // userCode.forEach(value => {
-  //   //   if(value.fileName === selectedFile){
-  //   //     setUserCode(value.content = newCodeValue)
-  //   //   }
-  //   // })
-  //   console.log(userCode);
-  // }
 
   function handleChange(newValue) {
     setCode(newValue);
     console.log(code);
-  }
-  function getFileIndex() {
     const elementIndex = userCode.findIndex((value) => {
       return value.fileName === selectedFile;
     });
+    let tempUserCode = [...userCode];
+
+    tempUserCode[elementIndex] = {
+      ...tempUserCode[elementIndex],
+      content: newValue,
+    };
+
+    setUserCode(tempUserCode);
+    console.log(userCode);
   }
+  // function getFileIndex() {
+  //   const elementIndex = userCode.findIndex((value) => {
+  //     return value.fileName === selectedFile;
+  //   });
+  // }
   const clearFileName = () => {
     setFileName("");
   };
@@ -123,18 +121,12 @@ const CodeFiles = (props) => {
             </Paper>
           </Grid>
           <Grid item>
-            {userCode.map((value, index) => {
-              if (value.fileName === selectedFile) {
-                return (
-                  <Editor
-                    value={value.content}
-                    onChange={handleChange}
-                    // onChange={(newValue) => handleChange(newValue, value, index)}
-                  />
-                );
+            {userCode.map((data) => {
+              if (data.fileName === selectedFile) {
+                return <Editor value={code} onChange={handleChange} />;
               }
             })}
-            {/* <Editor /> */}
+            {/* <Editor value={code} onChange={handleChange} /> */}
           </Grid>
         </Grid>
       </Box>
