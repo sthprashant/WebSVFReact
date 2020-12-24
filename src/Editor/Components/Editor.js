@@ -1,27 +1,27 @@
-import React from "react";
+import React from 'react';
 
-import AceEditor from "react-ace";
+import AceEditor from 'react-ace';
 
-import "ace-builds/src-noconflict/mode-c_cpp";
-import "ace-builds/src-noconflict/mode-json";
+import 'ace-builds/src-noconflict/mode-c_cpp';
+import 'ace-builds/src-noconflict/mode-json';
 //import 'ace-builds/src-noconflict/mode-javascript';
-import "ace-builds/src-noconflict/theme-terminal";
+import 'ace-builds/src-noconflict/theme-terminal';
 
-import "ace-builds/webpack-resolver";
+import 'ace-builds/webpack-resolver';
 
 const Editor = (props) => {
   return (
     <div>
       <AceEditor
-        mode="c_cpp"
-        theme="terminal"
+        mode={props.mode}
+        theme='terminal'
         onChange={props.onChange}
-        name="main-editor"
-        editorProps={{ $blockScrolling: true }}
-        wrapEnabled={true}
+        name={props.name}
+        editorProps={props.editorProps}
+        wrapEnabled={props.wrapEnabled}
         value={props.value}
-        width="70rem"
-        height="30rem"
+        width='70rem'
+        height='30rem'
       />
     </div>
   );

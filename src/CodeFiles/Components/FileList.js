@@ -1,43 +1,33 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 import {
   Typography,
   Grid,
-  IconButton,
   List,
   ListItemIcon,
   ListItemText,
   ListItem,
-  Divider,
-} from "@material-ui/core";
+} from '@material-ui/core';
 
-import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
-import Editor from "../../Editor/Components/Editor";
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 
 const FileList = (props) => {
-  const [selectedFile, setselectedFile] = useState(props.userCode[0].fileName);
+  //const [selectedFile, setselectedFile] = useState(props.userCode[0].fileName);
 
-  // const handleFileClick = (e, fileName) => {
-  //   console.log(e);
-  //   console.log(e.target.textContent);
-  //   setselectedFile(fileName);
-  // };
   return (
     <div>
       <Grid container spacing={5}>
         <Grid item xs={12}>
-          <Typography variant="h6">Files</Typography>
+          <Typography variant='h6'>Files</Typography>
           <List dense>
-            {props.userCode.map((value) => {
+            {props.userCode.map((value, index) => {
               return (
-                <div>
+                <div key={index}>
                   <ListItem
                     key={value.fileId}
                     button
                     // onClick={props.updateSelectedFile}
-                    onClick={(e) => {
-                      props.updateSelectedFile(e, value.fileName);
-                    }}
+                    onClick={() => props.updateSelectedFile(value.fileName)}
                     selected={props.selectedFile === value.fileName}
                   >
                     <ListItemIcon>
