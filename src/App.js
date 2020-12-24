@@ -1,27 +1,37 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
+import AppBar from "@material-ui/core/AppBar";
+import Box from "@material-ui/core/Box";
+import { Grid, Typography, Paper } from "@material-ui/core";
+// import websvf from "./api/websvf";
 
-import websvf from "./api/websvf";
-
-import prettyFormat from "pretty-format";
-import Editor from "./Editor/Components/Editor";
 import CodeFiles from "./CodeFiles/index";
-
-import { Grid } from "@material-ui/core";
+import { Toolbar } from "@material-ui/core";
 
 function App() {
-  const [response, setResponse] = useState("");
-
-  //onChange Code
-  const onChange = (newValue) => {
-    console.log("change", newValue);
-    //console.log(userCode)
-    //setCode(newValue);
-  };
-
   return (
     <div className="App">
-      <CodeFiles />
+      <AppBar position="static" color="primary">
+        <Toolbar>
+          <Typography variant="h4">WEBSVF</Typography>
+        </Toolbar>
+      </AppBar>
+      <Grid container justify="center" alignItems="center" direction="column">
+        <Grid item>
+          <Box my={3}>
+            <CodeFiles />
+          </Box>
+        </Grid>
+        <Grid item>
+          <Box my={3}>
+            <Paper variant="outlined" elevation={0} square="true">
+              <Box px={42} py={30}>
+                <Typography variant="h3">Output goes here</Typography>
+              </Box>
+            </Paper>
+          </Box>
+        </Grid>
+      </Grid>
     </div>
   );
 }

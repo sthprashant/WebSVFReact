@@ -20,7 +20,7 @@ const Editor = (props) => {
         editorProps={{ $blockScrolling: true }}
         wrapEnabled={true}
         value={props.value}
-        width="70rem"
+        width="40rem"
         height="30rem"
       />
     </div>

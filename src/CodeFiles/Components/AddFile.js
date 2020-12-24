@@ -28,7 +28,7 @@ const AddFile = (props) => {
             onChange={props.handleFileName}
             value={props.fileName}
           />
-          <p>{props.fileName}</p>
+          <p>{`${props.fileName}.c`}</p>
         </DialogContent>
         <DialogActions>
           <Button onClick={props.closeDialog}>Cancel</Button>

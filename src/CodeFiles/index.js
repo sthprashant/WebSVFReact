@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Paper, withStyles, Grid, Box } from "@material-ui/core";
+import { Paper, Grid, Box, Button } from "@material-ui/core";
 
 import AddFile from "./Components/AddFile";
 import FileList from "./Components/FileList";
@@ -11,6 +11,7 @@ const CodeFiles = (props) => {
   const [fileName, setFileName] = useState("");
   const [dialogBox, setDialogBox] = useState(false);
   const [code, setCode] = useState(`//write your C code here`);
+  const[fileOptions, setFileOptions] =useState(null)
 
   const [userCode, setUserCode] = useState([
     {
@@ -28,7 +29,7 @@ const CodeFiles = (props) => {
       ...userCode,
       {
         fileId: Math.random(),
-        fileName: fileName,
+        fileName: `${fileName}.c`,
         version: 0.1,
         content: `//write your C code here`,
       },
@@ -51,15 +52,6 @@ const CodeFiles = (props) => {
     setDialogBox(false);
     clearFileName();
   }
-  // function updateSelectedFile(selectedFileName) {
-  //   console.log(selectedFileName);
-  //   setselectedFile(selectedFileName.target.textContent);
-  //   console.log(selectedFile);
-  //   const elementIndex = userCode.findIndex((value) => {
-  //     return value.fileName === selectedFile;
-  //   });
-  //   setCode(userCode[elementIndex].content);
-  // }
   function updateSelectedFile(e, selectedFileName) {
     console.log(e);
     console.log(e.target.textContent);
@@ -86,51 +78,94 @@ const CodeFiles = (props) => {
     setUserCode(tempUserCode);
     console.log(userCode);
   }
-  // function getFileIndex() {
-  //   const elementIndex = userCode.findIndex((value) => {
-  //     return value.fileName === selectedFile;
-  //   });
-  // }
+
+  function handleFileOptions() {
+    console.log(`button pressed`)
+  }
   const clearFileName = () => {
     setFileName("");
   };
 
   return (
     <div>
-      <Box>
-        <Grid container direction="row">
-          <Grid item>
-            <Paper>
-              <Grid container direction="column" justify="center">
-                <AddFile
-                  handleAddFile={handleAddFile}
-                  handleFileName={handleFileName}
-                  clearFileName={clearFileName}
-                  fileName={fileName}
-                  userCode={userCode}
-                  openDialog={openDialog}
-                  closeDialog={closeDialog}
-                  dialogBox={dialogBox}
-                />
-                <FileList
-                  userCode={userCode}
-                  selectedFile={selectedFile}
-                  updateSelectedFile={updateSelectedFile}
-                />
-              </Grid>
-            </Paper>
+      <Button>Project</Button>
+      <Button>Version</Button>
+      <Grid container justify="center">
+        <Box>
+          <Grid container direction="row">
+            <Grid item>
+              <Paper
+                variant="outlined"
+                square="true"
+                style={{ height: "480px" }}
+              >
+                <Grid container direction="column" justify="flex-start">
+                  <Grid container justify="flex-end">
+                    <Box>
+                      <AddFile
+                        handleAddFile={handleAddFile}
+                        handleFileName={handleFileName}
+                        clearFileName={clearFileName}
+                        fileName={fileName}
+                        userCode={userCode}
+                        openDialog={openDialog}
+                        closeDialog={closeDialog}
+                        dialogBox={dialogBox}
+                      />
+                    </Box>
+                  </Grid>
+                  <FileList
+                    userCode={userCode}
+                    selectedFile={selectedFile}
+                    updateSelectedFile={updateSelectedFile}
+                    handleOptions={handleFileOptions}
+                    fileOptions = {fileOptions}
+                  />
+                </Grid>
+              </Paper>
+            </Grid>
+            <Grid item>
+              {userCode.map((data) => {
+                if (data.fileName === selectedFile) {
+                  return (
+                    <Editor value={data.content} onChange={handleChange} />
+                  );
+                }
+                return;
+              })}
+            </Grid>
+            <Grid item>
+              <Paper
+                variant="outlined"
+                square="true"
+                style={{ height: "480px" }}
+              >
+                <Grid container direction="column" justify="flex-start">
+                  <Grid container justify="flex-end">
+                    <Box>
+                      <AddFile
+                        handleAddFile={handleAddFile}
+                        handleFileName={handleFileName}
+                        clearFileName={clearFileName}
+                        fileName={fileName}
+                        userCode={userCode}
+                        openDialog={openDialog}
+                        closeDialog={closeDialog}
+                        dialogBox={dialogBox}
+                      />
+                    </Box>
+                  </Grid>
+                  <FileList
+                    userCode={userCode}
+                    selectedFile={selectedFile}
+                    updateSelectedFile={updateSelectedFile}
+                  />
+                </Grid>
+              </Paper>
+            </Grid>
           </Grid>
-          <Grid item>
-            {userCode.map((data) => {
-              if (data.fileName === selectedFile) {
-                return <Editor value={data.content} onChange={handleChange} />;
-              }
-              return;
-            })}
-            {/* <Editor value={code} onChange={handleChange} /> */}
-          </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      </Grid>
     </div>
   );
 };
