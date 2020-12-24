@@ -123,8 +123,9 @@ const CodeFiles = (props) => {
           <Grid item>
             {userCode.map((data) => {
               if (data.fileName === selectedFile) {
-                return <Editor value={code} onChange={handleChange} />;
+                return <Editor value={data.content} onChange={handleChange} />;
               }
+              return;
             })}
             {/* <Editor value={code} onChange={handleChange} /> */}
           </Grid>
