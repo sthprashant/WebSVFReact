@@ -7,6 +7,9 @@ https://github.com/sthprashant/WebSVFExpress
 
 The React app interacts with the WebSVF-Express server at the endpoint http://localhost:5001
 
+Test Deployment Links:
+https://prashantusercode.d1ehdfd4rbo4zj.amplifyapp.com/
+
 ## Init React App
 
 ```
