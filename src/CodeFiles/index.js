@@ -16,15 +16,39 @@ const CodeFiles = (props) => {
   const [fileName, setFileName] = useState('');
   const [dialogBox, setDialogBox] = useState(false);
   const [code, setCode] = useState(`//write your C code here`);
+  const [project, setProject] = useState([]);
+
   const [userCode, setUserCode] = useState([
     {
-      fileId: 'init-temp',
+      fileID: 'init-temp',
       fileName: 'example.c',
       version: '0.0',
       content: `//write your C code here`,
+      files: [],
     },
   ]);
   const [selectedFile, setselectedFile] = useState(userCode[0].fileName);
+
+  useEffect(() => {
+    const elementIndex = userCode.findIndex((value) => {
+      return value.fileName === selectedFile;
+    });
+    setCode(userCode[elementIndex].content);
+  }, [selectedFile, userCode]);
+
+  useEffect(() => {
+    (async function useEffectWorkaround() {
+      await loadProject();
+    })();
+  }, []);
+
+  const loadProject = async () => {
+    const response = await websvf.get('/db/getFiles/');
+    if (response) {
+      setProject(response.data.projects[0]);
+      setUserCode(response.data.projects[0].userCode);
+    }
+  };
 
   const handleAddFile = () => {
     setUserCode([
@@ -89,14 +113,10 @@ const CodeFiles = (props) => {
     );
 
     setResponse(prettyFormat(response.data, { escapeString: false }));
+    (async function asyncWorkaround() {
+      await loadProject();
+    })();
   };
-
-  useEffect(() => {
-    const elementIndex = userCode.findIndex((value) => {
-      return value.fileName === selectedFile;
-    });
-    setCode(userCode[elementIndex].content);
-  }, [selectedFile, userCode]);
 
   return (
     <div>
@@ -124,10 +144,11 @@ const CodeFiles = (props) => {
             </Paper>
           </Grid>
           <Grid item>
-            {userCode.map((data) => {
+            {userCode.map((data, index) => {
               if (data.fileName === selectedFile) {
                 return (
                   <Editor
+                    key={index}
                     mode={'c_cpp'}
                     name={'main-editor'}
                     value={data.content}
