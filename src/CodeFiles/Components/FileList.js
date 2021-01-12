@@ -1,77 +1,73 @@
-import React, { useState } from 'react';
+import React from "react";
 
 import {
   Typography,
+  IconButton,
   Grid,
   List,
   ListItemIcon,
   ListItemText,
   ListItem,
-} from '@material-ui/core';
-
-import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
-import FolderIcon from '@material-ui/icons/Folder';
+  // Button,
+  Menu,
+  MenuItem,
+  Box,
+} from "@material-ui/core";
+//
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
 
 const FileList = (props) => {
-  //const [selectedFile, setselectedFile] = useState(props.userCode[0].fileName);
-
   return (
-    <React.Fragment>
-      <Grid container spacing={5} style={{ padding: '15px' }}>
-        <Grid item xs={12}>
-          <Typography variant='h6'>Project: abc</Typography>
-
-          <List dense>
-            {props.userCode.map((value, index) => {
+    <div>
+      <Grid container justify="flex-start">
+        <Grid item>
+          
+          <List>
+            {props.userCode.map((value) => {
               return (
-                <React.Fragment>
+                <div>
                   <ListItem
-                    key={value.fileID}
+                    key={value.fileId}
                     button
-                    // onClick={props.updateSelectedFile}
-                    onClick={() => props.updateSelectedFile(value.fileName)}
+                    onClick={(e) => {
+                      props.updateSelectedFile(e, value.fileName);
+                    }}
                     selected={props.selectedFile === value.fileName}
                   >
-                    <ListItemIcon style={{ minWidth: '20px' }}>
-                      <FolderIcon style={{ fontSize: '17px' }} />
-                      <ArrowRightIcon style={{ fontSize: '17px' }} />
+                    <ListItemIcon>
+                      <InsertDriveFileIcon />
                     </ListItemIcon>
-                    <ListItemText
-                      primary={value.fileName}
-                      style={{ margin: '0' }}
-                    />
+                    <ListItemText primary={value.fileName} />
+                    <Box px={1}>
+                      <IconButton
+                        variant="outlined"
+                        onClick={props.handleOptions}
+                        size="small"
+                        p={5}
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                      <Menu
+                        id="simple-menu"
+                        anchorEl={props.fileOptions}
+                        keepMounted
+                        open={Boolean(props.fileOptions)}
+                        // onClose={handleClose}
+                      >
+                        <MenuItem onClick={() => {}}>Profile</MenuItem>
+                        <MenuItem onClick={() => {}}>My account</MenuItem>
+                        <MenuItem onClick={() => {}}>Logout</MenuItem>
+                      </Menu>
+                    </Box>
                   </ListItem>
-                  <List dense style={{ paddingLeft: '20px' }}>
-                    {props.userCode.map((value, index) => {
-                      return (
-                        <ListItem
-                          key={value.fileID}
-                          button
-                          // onClick={props.updateSelectedFile}
-                          onClick={() =>
-                            props.updateSelectedFile(value.fileName)
-                          }
-                          selected={props.selectedFile === value.fileName}
-                        >
-                          <ListItemIcon style={{ minWidth: '20px' }}>
-                            <InsertDriveFileIcon style={{ fontSize: '15px' }} />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={value.fileName}
-                            style={{ margin: '0' }}
-                          />
-                        </ListItem>
-                      );
-                    })}
-                  </List>
-                </React.Fragment>
+                </div>
               );
             })}
           </List>
         </Grid>
       </Grid>
-    </React.Fragment>
+    </div>
   );
 };
 

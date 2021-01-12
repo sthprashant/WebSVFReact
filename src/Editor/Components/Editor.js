@@ -20,7 +20,7 @@ const Editor = (props) => {
         editorProps={props.editorProps}
         wrapEnabled={props.wrapEnabled}
         value={props.value}
-        width='60vw'
+        width='40rem'
         height='30rem'
       />
     </div>
