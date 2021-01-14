@@ -11,12 +11,12 @@ import FolderList from "./Components/FolderList";
 
 //import "./codefiles.css";
 
-const CodeFiles = (props) => {
+const CodeFiles = ({code, setCode}) => {
   const [fileName, setFileName] = useState("");
   const [folderName, setFolderName] = useState("");
   const [fileDialog, setFileDialog] = useState(false);
   const [folderDialog, setFolderDialog] = useState(false);
-  const [code, setCode] = useState(`//write your C code here`);
+  
   const [fileOptions, setFileOptions] = useState(null);
   const [files,setFiles] = useState([
             {

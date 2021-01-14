@@ -1,14 +1,52 @@
-import React from "react";
+import React, {useState} from "react";
 import "./App.css";
 import AppBar from "@material-ui/core/AppBar";
 import Box from "@material-ui/core/Box";
-import { Grid, Typography, Paper } from "@material-ui/core";
+import { Grid, Typography, Paper, Button } from "@material-ui/core";
 // import websvf from "./api/websvf";
 
 import CodeFiles from "./CodeFiles/index";
 import { Toolbar } from "@material-ui/core";
 
+import websvf from './api/websvf';
+
+import SVG from 'react-inlinesvg';
+
+
 function App() {
+  const [code, setCode] = useState(`//write your C code here`);
+  const [output, setOutput] = useState('');
+
+  const genCallGraph = async () => {
+    const response = await websvf.post('/analysis/callGraph', {
+      code: code,
+      fileName: 'example',
+    });
+    if (response) {
+      setOutput(response.data);
+    }
+  };
+
+  const genICFG = async () => {
+    const response = await websvf.post('/analysis/icfg', {
+      code: code,
+      fileName: 'example',
+    });
+    if (response) {
+      setOutput(response.data);
+    }
+  };
+
+  const genPAG = async () => {
+    const response = await websvf.post('/analysis/pag', {
+      code: code,
+      fileName: 'example',
+    });
+    if (response) {
+      setOutput(response.data);
+    }
+  };
+
   return (
     <div className="App">
       <AppBar position="static" color="primary">
@@ -19,14 +57,20 @@ function App() {
       <Grid container justify="center" alignItems="center" direction="column">
         <Grid item>
           <Box my={3}>
-            <CodeFiles />
+            <CodeFiles code={code} setCode={setCode}/>
           </Box>
         </Grid>
+        <Button onClick={genCallGraph}>CallGraph</Button>
+        <Button onClick={genICFG}>IFCG</Button>
+        <Button onClick={genPAG}>PAG</Button>
         <Grid item>
           <Box my={3}>
             <Paper variant="outlined" elevation={0} square="true">
-              <Box px={42} py={30}>
-                <Typography variant="h3">Output goes here</Typography>
+              {/* <Box px={42} py={30}> */}
+              <Box>
+                {/* <Typography variant="h3"></Typography> */}
+                
+                <SVG src={output} />
               </Box>
             </Paper>
           </Box>
