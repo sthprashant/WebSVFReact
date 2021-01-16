@@ -24,7 +24,7 @@ const FileList = (props) => {
         <Grid item>
           
           <List>
-            {props.userCode.map((value) => {
+            {/* {props.userCode.map((value) => {
               return (
                 <div>
                   <ListItem
@@ -63,7 +63,7 @@ const FileList = (props) => {
                   </ListItem>
                 </div>
               );
-            })}
+            })} */}
           </List>
         </Grid>
       </Grid>

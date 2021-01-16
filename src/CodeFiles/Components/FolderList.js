@@ -1,17 +1,10 @@
-import React, { useState } from "react";
-// import {
-//   Typography,
-//   IconButton,
-//   Grid,
-//   List,
-//   ListItemIcon,
-//   ListItemText,
-//   ListItem,
-//   // Button,
-//   Menu,
-//   MenuItem,
-//   Box,
-// } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import Collapse from "@material-ui/core/Collapse";
 
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
@@ -23,68 +16,66 @@ import TreeView from "@material-ui/lab/TreeView";
 import websvf from "../../api/websvf";
 
 const FolderList = (props) => {
-  // const [fileName, setFileName] = useState("");
-  // const [folderName, setFolderName] = useState("");
-  // const [fileDialog, setFileDialog] = useState(false);
-  // const [folderDialog, setFolderDialog] = useState(false);
-  // const [fileOptions, setFileOptions] = useState(null);
-  // const [openFolder, setOpenFolder] = useState(false);
+  const [folders, setFolders] = useState([]);
+  const [userCode, setUserCode] = useState([{}]);
   var i = 0;
-  // const handleFolderExpand = (e) => {
-  //   console.log(e);
-  //   setOpenFolder(!openFolder);
-  // };
+
+  async function loadUserCode() {
+    var project = await websvf.get("/db/getFiles");
+    setUserCode(
+      project.data.projects.map((project) => {
+        return project.userCode;
+      })
+    );
+    // console.log(userCode);
+  }
+
+  async function loadFolders() {
+    var project = await websvf.get("/db/getFiles");
+    setFolders(
+      project.data.projects.map((project) => {
+        return project.userCode.map((value) => {
+          if (value.folderName) {
+            return value.folderName;
+          } else {
+            return "";
+          }
+        });
+      })
+    );
+    //console.log(folders);
+    //setFolders(fldr);
+  }
+
+  useEffect(() => {
+    loadFolders();
+    loadUserCode();
+  }, []);
+  // const load
   return (
     <div>
-      <TreeView
-        defaultCollapseIcon={<ExpandMoreIcon />}
-        defaultExpandIcon={<ChevronRightIcon />}
-      >
-        {props.userCode.map((value) => {
+      <List>
+        {userCode.map((value) => {
           return (
             <div>
-              <TreeItem nodeId={i++} label={value.folderName}>
-                <TreeItem
-                  nodeId={i++}
-                  label={value.files.map((file) => {
-                    return file.fileName;
-                  })}
-                  onClick={() => {}}
-                />
-              </TreeItem>
-            </div>
-          );
-        })}
-      </TreeView>
-      {/* <List>
-        {props.userCode.map((value) => {
-          return (
-            <div>
-              <ListItem button onClick={handleFolderExpand}>
+              <ListItem button>
                 <ListItemIcon>
                   <FolderIcon />
                 </ListItemIcon>
-                <ListItemText primary={value.folderName} />
-                {openFolder ? <ExpandLess /> : <ExpandMore />}
+                <ListItemText primary ={userCode.folderName}/>
               </ListItem>
-              <Collapse in={openFolder} timeout="auto" unmountOnExit>
-                <Box pl={4}>
-                  <ListItem button>
-                    <ListItemIcon>
-                      <InsertDriveFileIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={value.files.map((file) => {
-                        return file.fileName;
-                      })}
-                    />
-                  </ListItem>
-                </Box>
-              </Collapse>
             </div>
           );
         })}
-      </List> */}
+      </List>
+      {/* <TreeView
+        defaultCollapseIcon={<ExpandMoreIcon />}
+        defaultExpandIcon={<ChevronRightIcon />}
+      >
+        {userCode.map((value) => {
+          return <TreeItem nodeId={i++} label={value.folderName} />;
+        })}
+      </TreeView> */}
     </div>
   );
 };
