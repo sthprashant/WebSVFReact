@@ -74,7 +74,7 @@ function App() {
   function preProcessor(code) {
     let modifiedCode;
 
-    //Tianyangs code to anlyse which nodes have th eln
+    //Tianyangs code to anlyse which nodes have the '{ln: number fl: string}' string
 
     //Modify the output (svg) to that nodes that do have '{ln: number fl: string}' get an onClick prop (might need to implement html-to-react npm module)
 
