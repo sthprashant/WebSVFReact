@@ -3,7 +3,6 @@ import "./App.css";
 import AppBar from "@material-ui/core/AppBar";
 import Box from "@material-ui/core/Box";
 import { Grid, Typography, Paper, Button } from "@material-ui/core";
-// import websvf from "./api/websvf";
 
 import CodeFiles from "./CodeFiles/index";
 import { Toolbar } from "@material-ui/core";
@@ -11,7 +10,6 @@ import { Toolbar } from "@material-ui/core";
 import websvf from './api/websvf';
 
 import SVG from 'react-inlinesvg';
-
 
 function App() {
   const [code, setCode] = useState(`//write your C code here`);
@@ -102,15 +100,21 @@ function App() {
             <Paper variant="outlined" elevation={0} square="true">
               {/* <Box px={42} py={30}> */}
               <Box>
+                
                 {/* <Typography variant="h3"></Typography> */}
                 
-                <SVG src={output} />
+
+                {/* {output} */}
               </Box>
             </Paper>
           </Box>
         </Grid>
       </Grid>
+      {/* SVG being rendered after its sent as a response from the POST request */}
+      {/* SVG sizing/text-overflow needs to be fixed */}
+      <SVG src={output} />
     </div>
+    
   );
 }
 
