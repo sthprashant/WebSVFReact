@@ -61,12 +61,6 @@ function App() {
       fileName: 'example',
     });
     if (response) {
-
-      //Tianyangs code to anlyse which nodes have th eln
-
-      //Modify the output (svg) to that node s that do have ln get an onClick 
-
-
       setOutput(response.data);
     }
   };
@@ -75,6 +69,19 @@ function App() {
     //Parse e.target.value to get the line no.
 
     //Set the highlightedState to the ln
+  }
+
+  function preProcessor(code) {
+    let modifiedCode;
+
+    //Tianyangs code to anlyse which nodes have th eln
+
+    //Modify the output (svg) to that nodes that do have '{ln: number fl: string}' get an onClick prop (might need to implement html-to-react npm module)
+
+    //return modifiedCode;
+
+    //Returning code as is until the pre-processing logic is implemented
+    return code;
   }
 
   return (
@@ -103,8 +110,6 @@ function App() {
                 
                 {/* <Typography variant="h3"></Typography> */}
                 
-
-                {/* {output} */}
               </Box>
             </Paper>
           </Box>
@@ -112,7 +117,7 @@ function App() {
       </Grid>
       {/* SVG being rendered after its sent as a response from the POST request */}
       {/* SVG sizing/text-overflow needs to be fixed */}
-      <SVG src={output} />
+      <SVG src={output} preProcessor={preProcessor} loader={<span>Loading...</span>}/>
     </div>
     
   );
