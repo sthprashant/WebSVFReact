@@ -37,8 +37,8 @@ function App() {
     }
   };
 
-  const genPAG = async () => {
-    const response = await websvf.post('/analysis/pag', {
+  const genSVFG = async () => {
+    const response = await websvf.post('/analysis/svfg', {
       code: code,
       fileName: 'example',
     });
@@ -46,6 +46,38 @@ function App() {
       setOutput(response.data);
     }
   };
+
+  const genVFG = async () => {
+    const response = await websvf.post('/analysis/vfg', {
+      code: code,
+      fileName: 'example',
+    });
+    if (response) {
+      setOutput(response.data);
+    }
+  };
+
+  const genPAG = async () => {
+    const response = await websvf.post('/analysis/pag', {
+      code: code,
+      fileName: 'example',
+    });
+    if (response) {
+
+      //Tianyangs code to anlyse which nodes have th eln
+
+      //Modify the output (svg) to that node s that do have ln get an onClick 
+
+
+      setOutput(response.data);
+    }
+  };
+
+  function onClick(e) {
+    //Parse e.target.value to get the line no.
+
+    //Set the highlightedState to the ln
+  }
 
   return (
     <div className="App">
@@ -63,6 +95,8 @@ function App() {
         <Button onClick={genCallGraph}>CallGraph</Button>
         <Button onClick={genICFG}>IFCG</Button>
         <Button onClick={genPAG}>PAG</Button>
+        <Button onClick={genSVFG}>SVFG</Button>
+        <Button onClick={genVFG}>VFG</Button>
         <Grid item>
           <Box my={3}>
             <Paper variant="outlined" elevation={0} square="true">
