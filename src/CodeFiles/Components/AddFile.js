@@ -18,8 +18,8 @@ const AddFile = (props) => {
   return (
     <div>
       <IconButton
-        variant="contained"
-        color="primary"
+        variant='contained'
+        color='primary'
         onClick={props.openDialog}
       >
         <AddIcon />
@@ -28,22 +28,24 @@ const AddFile = (props) => {
         <DialogTitle>Create a New File</DialogTitle>
         <DialogContent>
           <TextField
-            label="File Name"
+            label='File Name'
             onChange={props.handleFileName}
             value={props.fileName}
           />
           <p>{props.fileName}</p>
-          <InputLabel id="select-folder">Folder</InputLabel>
+          <InputLabel id='select-folder'>Folder</InputLabel>
           <Select
-            labelId="select-folder"
-            id="select-folder"
+            labelId='select-folder'
+            id='select-folder'
             value={props.folderName}
             onChange={() => {}}
             input={<Input />}
           >
-            {props.userCode.map((value) => {
+            {props.userCode.map((value, id) => {
               return (
-                <MenuItem value={value.folderName}>{value.folderName}</MenuItem>
+                <MenuItem key={id} value={value.folderName}>
+                  {value.folderName}
+                </MenuItem>
               );
             })}
             {/* <MenuItem value="">

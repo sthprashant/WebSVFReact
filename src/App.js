@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import "./App.css";
 import AppBar from "@material-ui/core/AppBar";
 import Box from "@material-ui/core/Box";
@@ -7,18 +7,18 @@ import { Grid, Typography, Paper, Button } from "@material-ui/core";
 import CodeFiles from "./CodeFiles/index";
 import { Toolbar } from "@material-ui/core";
 
-import websvf from './api/websvf';
+import websvf from "./api/websvf";
 
-import SVG from 'react-inlinesvg';
+import SVG from "react-inlinesvg";
 
 function App() {
   const [code, setCode] = useState(`//write your C code here`);
-  const [output, setOutput] = useState('');
+  const [output, setOutput] = useState("");
 
   const genCallGraph = async () => {
-    const response = await websvf.post('/analysis/callGraph', {
+    const response = await websvf.post("/analysis/callGraph", {
       code: code,
-      fileName: 'example',
+      fileName: "example",
     });
     if (response) {
       setOutput(response.data);
@@ -26,9 +26,9 @@ function App() {
   };
 
   const genICFG = async () => {
-    const response = await websvf.post('/analysis/icfg', {
+    const response = await websvf.post("/analysis/icfg", {
       code: code,
-      fileName: 'example',
+      fileName: "example",
     });
     if (response) {
       setOutput(response.data);
@@ -36,9 +36,9 @@ function App() {
   };
 
   const genSVFG = async () => {
-    const response = await websvf.post('/analysis/svfg', {
+    const response = await websvf.post("/analysis/svfg", {
       code: code,
-      fileName: 'example',
+      fileName: "example",
     });
     if (response) {
       setOutput(response.data);
@@ -46,9 +46,9 @@ function App() {
   };
 
   const genVFG = async () => {
-    const response = await websvf.post('/analysis/vfg', {
+    const response = await websvf.post("/analysis/vfg", {
       code: code,
-      fileName: 'example',
+      fileName: "example",
     });
     if (response) {
       setOutput(response.data);
@@ -56,9 +56,9 @@ function App() {
   };
 
   const genPAG = async () => {
-    const response = await websvf.post('/analysis/pag', {
+    const response = await websvf.post("/analysis/pag", {
       code: code,
-      fileName: 'example',
+      fileName: "example",
     });
     if (response) {
       setOutput(response.data);
@@ -67,14 +67,52 @@ function App() {
 
   function onClick(e) {
     //Parse e.target.value to get the line no.
-
     //Set the highlightedState to the ln
   }
 
   function preProcessor(code) {
-    let modifiedCode;
+    const parser = new DOMParser();
 
-    //Tianyangs code to anlyse which nodes have the '{ln: number fl: string}' string
+    const xmlDoc = parser.parseFromString(code, "text/xml");
+    //console.log(xmlDoc.getElementsByTagName("text"));
+    //var svg = document.createElement(code);
+
+    let text = Array.from(xmlDoc.querySelectorAll("text"));
+    //console.log(text);
+
+    /*
+    --Tianyang's index.js Logic--
+
+    let ln = null;
+    let fl = null;
+    for (let len = 0; len < text.length; len++) {
+      let inner = text[len].innerHTML;
+      let split = inner.slice(1, -1).split(" ");
+
+      for (let i = 0; i < split.length; i++) {
+        if (
+          (split[i] === "line:" || split[i] === "ln:") &&
+          i + 1 < split.length
+        ) {
+          ln = split[i + 1];
+        }
+        if (
+          (split[i] === "file:" || split[i] === "fl:") &&
+          i + 1 < split.length
+        ) {
+          fl = split[i + 1];
+        }
+      }
+    }
+
+    console.log("ln:", +ln, "fl:", fl);
+    
+    --Tianyang's index.js Logic--
+    */
+
+    let modifiedCode = code.split(/{}/);
+
+    //Custom code to anlyse which nodes have the '{ln: number fl: string}' string
 
     //Modify the output (svg) to that nodes that do have '{ln: number fl: string}' get an onClick prop (might need to implement html-to-react npm module)
 
@@ -85,16 +123,16 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <AppBar position="static" color="primary">
+    <div className='App'>
+      <AppBar position='static' color='primary'>
         <Toolbar>
-          <Typography variant="h4">WEBSVF</Typography>
+          <Typography variant='h4'>WEBSVF</Typography>
         </Toolbar>
       </AppBar>
-      <Grid container justify="center" alignItems="center" direction="column">
+      <Grid container justify='center' alignItems='center' direction='column'>
         <Grid item>
           <Box my={3}>
-            <CodeFiles code={code} setCode={setCode}/>
+            <CodeFiles code={code} setCode={setCode} />
           </Box>
         </Grid>
         <Button onClick={genCallGraph}>CallGraph</Button>
@@ -104,22 +142,21 @@ function App() {
         <Button onClick={genVFG}>VFG</Button>
         <Grid item>
           <Box my={3}>
-            <Paper variant="outlined" elevation={0} square="true">
+            <Paper variant='outlined' elevation={0} square={true}>
               {/* <Box px={42} py={30}> */}
-              <Box>
-                
-                {/* <Typography variant="h3"></Typography> */}
-                
-              </Box>
+              <Box>{/* <Typography variant="h3"></Typography> */}</Box>
             </Paper>
           </Box>
         </Grid>
       </Grid>
       {/* SVG being rendered after its sent as a response from the POST request */}
       {/* SVG sizing/text-overflow needs to be fixed */}
-      <SVG src={output} preProcessor={preProcessor} loader={<span>Loading...</span>}/>
+      <SVG
+        src={output}
+        preProcessor={preProcessor}
+        loader={<span>Loading...</span>}
+      />
     </div>
-    
   );
 }
 

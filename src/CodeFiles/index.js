@@ -1,56 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Paper, Grid, Box, Button, Typography } from "@material-ui/core";
+import { Paper, Grid, Box } from "@material-ui/core";
 
 import AddFile from "./Components/AddFile";
 import FileList from "./Components/FileList";
 import Editor from "../Editor/Components/Editor";
-import AddFolder from "./Components/AddFolder";
 
 import websvf from "../api/websvf";
-import FolderList from "./Components/FolderList";
 
-//import "./codefiles.css";
+import prettyFormat from "pretty-format";
 
-const CodeFiles = ({code, setCode}) => {
+import "./codefiles.css";
+
+const CodeFiles = ({ code, setCode }) => {
+  const [response, setResponse] = useState("");
   const [fileName, setFileName] = useState("");
-  const [folderName, setFolderName] = useState("");
-  const [fileDialog, setFileDialog] = useState(false);
-  const [folderDialog, setFolderDialog] = useState(false);
-  
-  const [fileOptions, setFileOptions] = useState(null);
-  const [files,setFiles] = useState([
-            {
-          fileId: "init-temp",
-          fileName: "example.c",
-          version: "0.0",
-          content: `//write your C code here`,
-        },
-  ])
+  const [dialogBox, setDialogBox] = useState(false);
+  //const [code, setCode] = useState(`//write your C code here`);
+  const [project, setProject] = useState([]);
+
   const [userCode, setUserCode] = useState([
     {
-      folderId: "root",
-      folderName: "initial",
-      files: []
-      // [
-      //   {
-      //     fileId: "init-temp",
-      //     fileName: "example.c",
-      //     version: "0.0",
-      //     content: `//write your C code here`,
-      //   },
-      // ],
-      // fileId: "init-temp",
-      // fileName: "example.c",
-      // version: "0.0",
-      // content: `//write your C code here`,
+      fileID: "init-temp",
+      fileName: "example.c",
+      version: "0.0",
+      content: `//write your C code here`,
+      files: [],
     },
   ]);
-
-  //selectedFile needs to be declared after userCode
   const [selectedFile, setselectedFile] = useState(userCode[0].fileName);
-  console.log(userCode);
-  // console.log(`selected file is ${selectedFile} and file name is`);
-  // console.log(`code is ${code}`);
 
   useEffect(() => {
     const elementIndex = userCode.findIndex((value) => {
@@ -59,81 +36,54 @@ const CodeFiles = ({code, setCode}) => {
     setCode(userCode[elementIndex].content);
   }, [selectedFile, userCode]);
 
-  /*
-   *************Folder Functions*******************
-   */
-  const handleAddFolder = () => {
+  // useEffect(() => {
+  //   (async function useEffectWorkaround() {
+  //     await loadProject();
+  //   })();
+  // }, []);
+
+  const loadProject = async () => {
+    const response = await websvf.get("/db/getFiles/");
+    if (response) {
+      setProject(response.data.projects[0]);
+      setUserCode(response.data.projects[0].userCode);
+    }
+  };
+
+  const handleAddFile = () => {
     setUserCode([
       ...userCode,
       {
-        folderId: Math.random(),
-        folderName: `${folderName}`,
-        files: [],
+        fileId: Math.random(),
+        fileName: fileName,
+        version: 0.1,
+        content: `//write your C code here`,
       },
     ]);
 
-    console.log(userCode);
-    closeFolderDialog();
-    clearFolderName();
-  };
-  const handleFolderName = (e) => {
-    setFolderName(e.target.value);
-  };
-
-  function openFolderDialog() {
-    setFolderDialog(true);
-  }
-  function closeFolderDialog() {
-    setFolderDialog(false);
-    clearFileName();
-  }
-  const clearFolderName = () => {
-    setFolderName("");
-  };
-
-  //File Functions
-  const handleAddFile = (e) => {
-    // setUserCode([
-    //   ...userCode,
-    //   {
-    //     fileId: Math.random(),
-    //     fileName: `${fileName}.c`,
-    //     version: 0.1,
-    //     content: `//write your C code here`,
-    //   },
-    // ]);
-    console.log(e.target.value)
-    console.log(userCode);
-    console.log(`creating file with name ${fileName}`);
-    console.log(userCode);
-    closeFileDialog();
+    closeDialog();
     clearFileName();
   };
   const handleFileName = (e) => {
     setFileName(e.target.value);
   };
 
-  function openFileDialog() {
-    setFileDialog(true);
-  }
-  function closeFileDialog() {
-    setFileDialog(false);
+  const openDialog = () => {
+    setDialogBox(true);
+  };
+
+  const closeDialog = () => {
+    setDialogBox(false);
     clearFileName();
-  }
+  };
 
-  function updateSelectedFile(e, selectedFileName) {
-    console.log(e);
-    console.log(e.target.textContent);
+  const updateSelectedFile = (selectedFileName) => {
     setselectedFile(selectedFileName);
-    const elementIndex = userCode.findIndex((value) => {
-      return value.fileName === selectedFile;
-    });
-    setCode(userCode[elementIndex].content);
-  }
+  };
 
-  function handleChange(newValue) {
+  const handleChange = (newValue) => {
     setCode(newValue);
-    console.log(code);
+
     const elementIndex = userCode.findIndex((value) => {
       return value.fileName === selectedFile;
     });
@@ -145,133 +95,84 @@ const CodeFiles = ({code, setCode}) => {
     };
 
     setUserCode(tempUserCode);
-    console.log(userCode);
-  }
+  };
 
-  function handleFileOptions() {
-    console.log(`button pressed`);
-  }
   const clearFileName = () => {
     setFileName("");
   };
 
+  const codeSubmit = async () => {
+    const response = await websvf.post(
+      "/db/saveFile/",
+      //`code=${code}&fileName=${selectedFile}&fileVersion=${'1.0'}`,
+      {
+        code: code,
+        fileName: selectedFile,
+        fileVersion: "1.0",
+      }
+    );
+
+    setResponse(prettyFormat(response.data, { escapeString: false }));
+    (async function asyncWorkaround() {
+      await loadProject();
+    })();
+  };
+
   return (
     <div>
-      <Button>Project</Button>
-      <Button>Version</Button>
-      <Grid container justify="center">
-        <Box>
-          <Grid container direction="row">
-            <Grid item>
-              <Paper
-                variant="outlined"
-                square="true"
-                style={{ height: "480px" }}
-              >
-                <Grid container direction="column" justify="flex-start">
-                  <Grid
-                    container
-                    justify="flex-end"
-                    direction="row "
-                    alignItems="center"
-                  >
-                    <Box mx={3}>
-                      <Typography variant="h6">Code Files</Typography>
-                    </Box>
-                    <Box>
-                      <AddFolder
-                        handleAddFolder={handleAddFolder}
-                        handleFolderName={handleFolderName}
-                        openDialog={openFolderDialog}
-                        closeDialog={closeFolderDialog}
-                        dialogBox={folderDialog}
-                        userCode={userCode}
-                        folderName={folderName}
-                      />
-                      {/* <AddFolder
-                        handleAddFile={handleAddFile}
-                        handleFileName={handleFileName}
-                        clearFileName={clearFileName}
-                        // fileName={fileName}
-                        // userCode={userCode}
-                        openDialog={openDialog}
-                        closeDialog={closeDialog}
-                        dialogBox={dialogBox}
-                      /> */}
-                    </Box>
-                    <Box>
-                      <AddFile
-                        handleAddFile={handleAddFile}
-                        handleFileName={handleFileName}
-                        clearFileName={clearFileName}
-                        fileName={fileName}
-                        folderName={folderName}
-                        userCode={userCode}
-                        openDialog={openFileDialog}
-                        closeDialog={closeFileDialog}
-                        dialogBox={fileDialog}
-                      />
-                    </Box>
-                  </Grid>
-                  <FolderList userCode={userCode} />
-                  {/* <FileList
-                    userCode={userCode}
-                    selectedFile={selectedFile}
-                    updateSelectedFile={updateSelectedFile}
-                    handleOptions={handleFileOptions}
-                    fileOptions={fileOptions}
-                  /> */}
-                </Grid>
-              </Paper>
-            </Grid>
-            <Grid item>
-              {userCode.map((data, index) => {
-                if (data.fileName === selectedFile) {
-                  return (
-                    <Editor
-                      key={index}
-                      mode={"c_cpp"}
-                      name={"main-editor"}
-                      value={data.content}
-                      onChange={handleChange}
-                    />
-                  );
-                }
-                return "";
-              })}
-            </Grid>
-            <Grid item>
-              <Paper
-                variant="outlined"
-                square="true"
-                style={{ height: "480px" }}
-              >
-                <Grid container direction="column" justify="flex-start">
-                  <Grid container justify="flex-end">
-                    <Box>
-                      <AddFile
-                        handleAddFile={handleAddFile}
-                        handleFileName={handleFileName}
-                        clearFileName={clearFileName}
-                        fileName={fileName}
-                        userCode={userCode}
-                        openDialog={openFileDialog}
-                        closeDialog={closeFileDialog}
-                        dialogBox={fileDialog}
-                      />
-                    </Box>
-                  </Grid>
-                  <FileList
-                    userCode={userCode}
-                    selectedFile={selectedFile}
-                    updateSelectedFile={updateSelectedFile}
-                  />
-                </Grid>
-              </Paper>
-            </Grid>
+      <Box>
+        <Grid container direction='row'>
+          <Grid item>
+            <Paper>
+              <Grid container direction='column' justify='center'>
+                <AddFile
+                  handleAddFile={handleAddFile}
+                  handleFileName={handleFileName}
+                  clearFileName={clearFileName}
+                  fileName={fileName}
+                  userCode={userCode}
+                  openDialog={openDialog}
+                  closeDialog={closeDialog}
+                  dialogBox={dialogBox}
+                />
+                <FileList
+                  userCode={userCode}
+                  selectedFile={selectedFile}
+                  updateSelectedFile={updateSelectedFile}
+                />
+              </Grid>
+            </Paper>
           </Grid>
-        </Box>
-      </Grid>
+          <Grid item>
+            {userCode.map((data, index) => {
+              if (data.fileName === selectedFile) {
+                return (
+                  <Editor
+                    key={index}
+                    mode={"c_cpp"}
+                    name={"main-editor"}
+                    value={data.content}
+                    onChange={handleChange}
+                  />
+                );
+              }
+              return "";
+            })}
+            {/* <Editor value={code} onChange={handleChange} /> */}
+          </Grid>
+        </Grid>
+      </Box>
+      <button onClick={codeSubmit}> Submit </button>
+      <h1>Response from the POST request:</h1>
+      <Editor
+        mode={"json"}
+        theme={"terminal"}
+        //onChange={onChange}
+        name={"UNIQUE_ID_OF_DIV1"}
+        editorProps={{ $blockScrolling: true }}
+        wrapEnabled={true}
+        value={response}
+      />
     </div>
   );
 };
