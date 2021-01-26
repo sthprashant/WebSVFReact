@@ -94,9 +94,6 @@ function App() {
 
     //Add onClick to the elements with ids present in the filtered array
 
-    var s = new XMLSerializer();
-    var newXmlStr = s.serializeToString(xmlDoc);
-
     /*
     --Tianyang's index.js Logic--
 
@@ -130,7 +127,9 @@ function App() {
     //Returning code as is until the pre-processing logic is implemented
     //return code;
 
-    //return modifiedCode;
+    //return the modified XML Document;
+    var s = new XMLSerializer();
+    var newXmlStr = s.serializeToString(xmlDoc);
     return newXmlStr;
   }
 
