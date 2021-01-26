@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 
-import AceEditor from 'react-ace';
+import AceEditor from "react-ace";
 
-import 'ace-builds/src-noconflict/mode-c_cpp';
-import 'ace-builds/src-noconflict/mode-json';
+import "ace-builds/src-noconflict/mode-c_cpp";
+import "ace-builds/src-noconflict/mode-json";
 //import 'ace-builds/src-noconflict/mode-javascript';
-import 'ace-builds/src-noconflict/theme-terminal';
+import "ace-builds/src-noconflict/theme-terminal";
 
-import 'ace-builds/webpack-resolver';
+import "ace-builds/webpack-resolver";
 
 const Editor = (props) => {
   return (
@@ -22,6 +22,9 @@ const Editor = (props) => {
         value={props.value}
         width='40rem'
         height='30rem'
+        focus={props.focus}
+        annotations={props.annotations}
+        markers={props.markers}
       />
     </div>
   );

@@ -74,11 +74,28 @@ function App() {
     const parser = new DOMParser();
 
     const xmlDoc = parser.parseFromString(code, "text/xml");
-    //console.log(xmlDoc.getElementsByTagName("text"));
-    //var svg = document.createElement(code);
 
-    let text = Array.from(xmlDoc.querySelectorAll("text"));
-    //console.log(text);
+    //Analyse which nodes have the '{ln: number fl: string}' string
+    let text = Array.from(xmlDoc.getElementsByTagName("g"));
+    //Array of all g Elements that have { fl }
+    let filtered = text
+      .filter(
+        (value) =>
+          /\{[\s]+ln\:[\s]+[0-9]+[\s]+cl\:[\s]+[0-9]+[\s]+fl\:[\s]+[a-z]+\.c[\s]+\}/.test(
+            value.innerHTML
+          ) ||
+          /\{[\s]+in[\s]+line\:[\s]+[0-9]+[\s]+file\:[\s]+[a-z]+\.c[\s]+\}/.test(
+            value.innerHTML
+          )
+      )
+      .map((value) => value.id);
+    console.log(xmlDoc);
+    console.log(filtered);
+
+    //Add onClick to the elements with ids present in the filtered array
+
+    var s = new XMLSerializer();
+    var newXmlStr = s.serializeToString(xmlDoc);
 
     /*
     --Tianyang's index.js Logic--
@@ -110,16 +127,11 @@ function App() {
     --Tianyang's index.js Logic--
     */
 
-    let modifiedCode = code.split(/{}/);
-
-    //Custom code to anlyse which nodes have the '{ln: number fl: string}' string
-
-    //Modify the output (svg) to that nodes that do have '{ln: number fl: string}' get an onClick prop (might need to implement html-to-react npm module)
+    //Returning code as is until the pre-processing logic is implemented
+    //return code;
 
     //return modifiedCode;
-
-    //Returning code as is until the pre-processing logic is implemented
-    return code;
+    return newXmlStr;
   }
 
   return (
@@ -156,6 +168,7 @@ function App() {
         preProcessor={preProcessor}
         loader={<span>Loading...</span>}
       />
+      {/* {parserGlobal.parseFromString(output, "text/xml")} */}
     </div>
   );
 }
